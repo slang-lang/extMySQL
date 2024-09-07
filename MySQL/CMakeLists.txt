@@ -40,6 +40,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+    CoreExtensions
 )
 
 SET(MODULES
