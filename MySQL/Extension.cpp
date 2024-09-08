@@ -42,12 +42,12 @@ namespace Mysql {
 
 
 Extension::Extension()
-: AExtension( "Mysql", "0.4.1" )
+: AExtension( "Mysql", "0.5.0" )
 {
 	mName = "Mysql (using libMysql " + std::string( LIBMYSQL_VERSION ) + ")";
 }
 
-void Extension::initialize( Slang::IScope* /*scope*/ )
+void Extension::initialize( Slang::Extensions::ExtensionNamespace* /*scope*/ )
 {
 	// nothing to do here
 }
@@ -62,7 +62,6 @@ void Extension::provideMethods( Slang::Extensions::ExtensionMethods& methods )
 	methods.push_back( new Mysql::MysqlErrno() );
 	methods.push_back( new Mysql::MysqlError() );
 	methods.push_back( new Mysql::MysqlFetchRow() );
-	methods.push_back( new Mysql::MysqlFetchRow( "mysql_next_row", Slang::LanguageFeatureState::Deprecated ) );	// this is kept to be backwards compatible to old implementations that used 'mysql_next_row' instead of 'mysql_fetch_row'
 	methods.push_back( new Mysql::MysqlFieldCount() );
 	methods.push_back( new Mysql::MysqlFieldSeek() );
 	methods.push_back( new Mysql::MysqlFieldTell() );
