@@ -1,0 +1,7 @@
+# Slang library includes needed to build extensions
+SET( BUILD_SLANG_INC "/path/to/your/slang/directory/src/Projects/Core" )
+SET( BUILD_SLANG_LIB "/path/to/your/slang/directory/build/lib" )
+
+# MySQL library includes
+SET( BUILD_MYSQL_INC "/usr/include/mysql" )
+SET( BUILD_MYSQL_LIB "/usr/lib" )
