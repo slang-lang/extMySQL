@@ -6,10 +6,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -26,11 +26,11 @@ class MysqlRowSeek : public Extensions::ExtensionMethod
 {
 public:
 	MysqlRowSeek()
-	: ExtensionMethod(0, "mysql_row_seek", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_row_seek", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("offset", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("offset", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -50,13 +50,13 @@ public:
 				throw Common::Exceptions::Exception("no valid mysql result!");
 			}
 
-			*result = Runtime::IntegerObject(
+			*result = Runtime::Int32Type(
 				mysql_row_seek(myResult, (MYSQL_ROW_OFFSET)param_offset)
 			);
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

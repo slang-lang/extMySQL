@@ -7,10 +7,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -27,10 +27,10 @@ class MysqlStoreResult: public Extensions::ExtensionMethod
 {
 public:
 	MysqlStoreResult()
-	: ExtensionMethod(0, "mysql_store_result", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_store_result", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -57,11 +57,11 @@ public:
 			int my_result = ++mNumMysqlResults;
 			mMysqlResults.insert(std::make_pair(my_result, myResult));
 
-			*result = Runtime::IntegerObject(my_result);
+			*result = Runtime::Int32Type(my_result);
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

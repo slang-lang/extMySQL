@@ -7,10 +7,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -28,11 +28,11 @@ class MysqlGetFieldValueByIndex : public Extensions::ExtensionMethod
 {
 public:
 	MysqlGetFieldValueByIndex()
-	: ExtensionMethod(0, "mysql_get_field_value", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_get_field_value", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("field_index", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("field_index", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -62,11 +62,11 @@ public:
 				my_result = std::string(row[param_field_id]);
 			}
 
-			*result = Runtime::StringObject(my_result);
+			*result = Runtime::StringType(my_result);
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -81,11 +81,11 @@ class MysqlGetFieldValueByName : public Extensions::ExtensionMethod
 {
 public:
 	MysqlGetFieldValueByName()
-	: ExtensionMethod(0, "mysql_get_field_value", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_get_field_value", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("field_name", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("field_name", Designtime::StringType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -125,11 +125,11 @@ public:
 				throw Common::Exceptions::Exception("invalid field name '" + param_field_name + "' provided!");
 			}
 
-			*result = Runtime::StringObject(my_result);
+			*result = Runtime::StringType(my_result);
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

@@ -7,11 +7,11 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -28,15 +28,15 @@ class MysqlRealConnect: public Extensions::ExtensionMethod
 {
 public:
 	MysqlRealConnect()
-	: ExtensionMethod(0, "mysql_real_connect", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_real_connect", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("host", Designtime::StringObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("port", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("user", Designtime::StringObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("passwd", Designtime::StringObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("db", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("host", Designtime::StringType::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("port", Designtime::Int32Type::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("user", Designtime::StringType::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("passwd", Designtime::StringType::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("db", Designtime::StringType::TYPENAME, VALUE_NONE, true));
 
 		setSignature(params);
 	}
@@ -84,11 +84,11 @@ public:
 				my_result = param_handle;
 			}
 
-			*result = Runtime::IntegerObject(my_result);
+			*result = Runtime::Int32Type(my_result);
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
