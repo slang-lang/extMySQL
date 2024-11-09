@@ -16,16 +16,14 @@
 
 namespace Mysql {
 
-
-using std::map<int /*connection handle*/, MYSQL*> MysqlConnectionMap;
-using std::map<int /*result handle*/, MYSQL_RES*> MysqlResultMap;
+typedef std::map<int /*connection handle*/, MYSQL*> MysqlConnectionMap;
+typedef std::map<int /*result handle*/, MYSQL_RES*> MysqlResultMap;
 
 extern MysqlConnectionMap mMysqlConnections;
 extern int mNumMysqlConnections;
 
 extern MysqlResultMap mMysqlResults;
 extern int mNumMysqlResults;
-
 
 }
 
