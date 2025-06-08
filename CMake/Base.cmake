@@ -39,6 +39,11 @@ endif()
 # specify default includes for the project
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+SET(CMAKE_SKIP_RPATH TRUE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+SET(CMAKE_INSTALL_RPATH "")
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+
 # additional definitions
 #add_definitions(-DLOG_LEVEL=3)
 
