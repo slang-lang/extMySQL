@@ -1,4 +1,4 @@
-slang-mysql (0.9.3) noble; urgency=medium
+slang-mysql (0.5.1) noble; urgency=medium
 
   * Refactored debian package structure
 

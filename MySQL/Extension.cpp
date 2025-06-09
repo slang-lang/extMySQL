@@ -42,14 +42,15 @@ namespace Mysql {
 
 
 Extension::Extension()
-: AExtension( "Mysql", "0.5.0" )
+: AExtension( "extMySQL", "0.5.1" )
 {
-	mName = "Mysql (using libMysql " + std::string( LIBMYSQL_VERSION ) + ")";
+	mName = "extMySQL (using libMySQL " + std::string( LIBMYSQL_VERSION ) + ")";
 }
 
-void Extension::initialize( Slang::Extensions::ExtensionNamespace* /*scope*/ )
+void Extension::initialize( Slang::Extensions::ExtensionNamespace* scope )
 {
 	// nothing to do here
+	(void) scope;
 }
 
 void Extension::provideMethods( Slang::Extensions::ExtensionMethods& methods )
@@ -77,8 +78,8 @@ void Extension::provideMethods( Slang::Extensions::ExtensionMethods& methods )
 	methods.push_back( new Mysql::MysqlNumRows() );
 	methods.push_back( new Mysql::MysqlPing() );
 	methods.push_back( new Mysql::MysqlQuery() );
-	methods.push_back( new Mysql::MysqlRealEscapeString() );
 	methods.push_back( new Mysql::MysqlRealConnect() );
+	methods.push_back( new Mysql::MysqlRealEscapeString() );
 	methods.push_back( new Mysql::MysqlRowCount() );
 	methods.push_back( new Mysql::MysqlRowSeek() );
 	methods.push_back( new Mysql::MysqlRowTell() );
