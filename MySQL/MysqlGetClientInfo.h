@@ -32,20 +32,9 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& /*params*/, Runtime::Object* result )
 	{
-		try {
-			*result = Runtime::StringType(
-				(std::string)mysql_get_client_info()
-			);
-		}
-		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::StringType( std::string( mysql_get_client_info() ) );
 
 		return Runtime::ControlFlow::Normal;
 	}

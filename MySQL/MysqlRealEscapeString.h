@@ -37,34 +37,25 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
-			std::string param_from = (*it++).value().toStdString();
+		int param_handle = (*it++).value().toInt();
+		std::string param_from = (*it++).value().toStdString();
 
-			MYSQL *myConn = mMysqlConnections[param_handle];
-			if ( !myConn ) {
-				throw Common::Exceptions::Exception("no valid mysql connection handle: " + std::to_string(param_handle));
-			}
-
-			char* to = new char[(param_from.length() * 2) + 1];
-
-			mysql_real_escape_string(myConn, to, param_from.c_str(), param_from.length());
-
-			*result = Runtime::StringType(std::string(to));
+		MYSQL *myConn = mMysqlConnections[param_handle];
+		if ( !myConn ) {
+			throw Common::Exceptions::Exception("no valid mysql connection handle: " + std::to_string(param_handle));
 		}
-		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		char* to = new char[(param_from.length() * 2) + 1];
+
+		mysql_real_escape_string(myConn, to, param_from.c_str(), param_from.length());
+
+		*result = Runtime::StringType(std::string(to));
 
 		return Runtime::ControlFlow::Normal;
 	}
