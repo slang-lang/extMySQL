@@ -41,58 +41,49 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
-			std::string param_host = (*it++).value().toStdString();
-			int param_port = (*it++).value().toInt();
-			std::string param_user = (*it++).value().toStdString();
-			std::string param_passwd = (*it++).value().toStdString();
-			std::string param_db = (*it++).value().toStdString();
-			std::string param_socket;
-			long param_clientflag = 0;
+		int param_handle = (*it++).value().toInt();
+		std::string param_host = (*it++).value().toStdString();
+		int param_port = (*it++).value().toInt();
+		std::string param_user = (*it++).value().toStdString();
+		std::string param_passwd = (*it++).value().toStdString();
+		std::string param_db = (*it++).value().toStdString();
+		std::string param_socket;
+		long param_clientflag = 0;
 
-			MYSQL *myConn = mMysqlConnections[param_handle];
-			if ( !myConn ) {
-				throw Common::Exceptions::Exception("no valid mysql connection handle: " + std::to_string(param_handle));
-			}
-
-			if ( param_port == 0 ) {	// use default port
-				param_port = MYSQL_PORT_DEFAULT;
-			}
-
-			myConn = mysql_real_connect(
-					myConn,
-					param_host.c_str(),
-					param_user.c_str(),
-					param_passwd.c_str(),
-					param_db.c_str(),
-					(unsigned int) param_port,
-					param_socket.c_str(),
-					(unsigned long) param_clientflag
-			);
-
-			mMysqlConnections[param_handle] = myConn;
-
-			int my_result = 0;
-			if ( myConn ) {
-				my_result = param_handle;
-			}
-
-			*result = Runtime::Int32Type(my_result);
+		MYSQL *myConn = mMysqlConnections[param_handle];
+		if ( !myConn ) {
+			throw Common::Exceptions::Exception("no valid mysql connection handle: " + std::to_string(param_handle));
 		}
-		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		if ( param_port == 0 ) {	// use default port
+			param_port = MYSQL_PORT_DEFAULT;
 		}
+
+		myConn = mysql_real_connect(
+				myConn,
+				param_host.c_str(),
+				param_user.c_str(),
+				param_passwd.c_str(),
+				param_db.c_str(),
+				(unsigned int) param_port,
+				param_socket.c_str(),
+				(unsigned long) param_clientflag
+		);
+
+		mMysqlConnections[param_handle] = myConn;
+
+		int my_result = 0;
+		if ( myConn ) {
+			my_result = param_handle;
+		}
+
+		*result = Runtime::Int32Type(my_result);
 
 		return Runtime::ControlFlow::Normal;
 	}

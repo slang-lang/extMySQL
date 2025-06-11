@@ -37,40 +37,31 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
-			int param_field_id = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
+		int param_field_id = (*it++).value().toInt();
 
-			MYSQL_RES *myResult = mMysqlResults[param_handle];
-			if ( !myResult ) {
-				throw Common::Exceptions::Exception("no valid result handle: " + std::to_string(param_handle));
-			}
-
-			MYSQL_ROW row = myResult->current_row;
-			if ( !row ) {
-				throw Common::Exceptions::Exception("no valid row");
-			}
-
-			std::string my_result;
-			if ( row[param_field_id] ) {
-				my_result = std::string(row[param_field_id]);
-			}
-
-			*result = Runtime::StringType(my_result);
+		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		if ( !myResult ) {
+			throw Common::Exceptions::Exception("no valid result handle: " + std::to_string(param_handle));
 		}
-		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		MYSQL_ROW row = myResult->current_row;
+		if ( !row ) {
+			throw Common::Exceptions::Exception("no valid row");
 		}
+
+		std::string my_result;
+		if ( row[param_field_id] ) {
+			my_result = std::string(row[param_field_id]);
+		}
+
+		*result = Runtime::StringType(my_result);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -90,50 +81,41 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
-			std::string param_field_name = (*it++).value().toStdString();
+		int param_handle = (*it++).value().toInt();
+		std::string param_field_name = (*it++).value().toStdString();
 
-			MYSQL_RES *myResult = mMysqlResults[param_handle];
-			if ( !myResult ) {
-				throw Common::Exceptions::Exception("no valid result handle: " + std::to_string(param_handle));
+		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		if ( !myResult ) {
+			throw Common::Exceptions::Exception("no valid result handle: " + std::to_string(param_handle));
+		}
+
+		bool foundField = false;
+		std::string my_result;
+
+		for ( unsigned int idx = 0; idx < myResult->field_count; ++idx ) {
+			if ( !myResult->fields[idx].name ) {
+				throw Common::Exceptions::Exception("invalid field name detected at field index: " + std::to_string(idx));
 			}
 
-			bool foundField = false;
-			std::string my_result;
-
-			for ( unsigned int idx = 0; idx < myResult->field_count; ++idx ) {
-				if ( !myResult->fields[idx].name ) {
-					throw Common::Exceptions::Exception("invalid field name detected at field index: " + std::to_string(idx));
-				}
-
-				if ( std::string(myResult->fields[idx].name) == param_field_name ) {
-					foundField = true;
-					if ( myResult->current_row[idx] ) {
-						my_result = std::string(myResult->current_row[idx]);
-					}
+			if ( std::string(myResult->fields[idx].name) == param_field_name ) {
+				foundField = true;
+				if ( myResult->current_row[idx] ) {
+					my_result = std::string(myResult->current_row[idx]);
 				}
 			}
-
-			if ( !foundField ) {
-				throw Common::Exceptions::Exception("invalid field name '" + param_field_name + "' provided!");
-			}
-
-			*result = Runtime::StringType(my_result);
 		}
-		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		if ( !foundField ) {
+			throw Common::Exceptions::Exception("invalid field name '" + param_field_name + "' provided!");
 		}
+
+		*result = Runtime::StringType(my_result);
 
 		return Runtime::ControlFlow::Normal;
 	}

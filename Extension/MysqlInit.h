@@ -34,26 +34,17 @@ public:
 	}
 
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& /*params*/, Runtime::Object* result )
 	{
-		try {
-			MYSQL *myHandle = mysql_init(0);
+		MYSQL *myHandle = mysql_init(0);
 
-			int my_result = 0;
-			if ( myHandle ) {
-				my_result = ++mNumMysqlConnections;
-				mMysqlConnections.insert(std::make_pair(my_result, myHandle));
-			}
-
-			*result = Runtime::Int32Type(my_result);
+		int my_result = 0;
+		if ( myHandle ) {
+			my_result = ++mNumMysqlConnections;
+			mMysqlConnections.insert(std::make_pair(my_result, myHandle));
 		}
-		catch ( std::exception &e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type(my_result);
 
 		return Runtime::ControlFlow::Normal;
 	}
