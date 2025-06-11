@@ -42,7 +42,7 @@ namespace Mysql {
 
 
 Extension::Extension()
-: AExtension( "extMySQL", "0.5.1" )
+: AExtension( "extMySQL", "0.6.0" )
 {
 	mName = "extMySQL (using libMySQL " + std::string( LIBMYSQL_VERSION ) + ")";
 }
