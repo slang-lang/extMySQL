@@ -3,6 +3,7 @@
 #include "Extension.h"
 
 // Library includes
+#include <cassert>
 
 // Project includes
 #include "MysqlAffectedRows.h"

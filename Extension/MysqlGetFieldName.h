@@ -10,7 +10,6 @@
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Tools.h>
 #include "Types.h"
 
 // Forward declarations
@@ -41,10 +40,10 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		int param_handle = (*it++).value().toInt();
-		int param_field_index = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
+		auto param_field_index = (*it++).value().toInt();
 
-		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		auto* myResult = mMysqlResults[param_handle];
 		if ( !myResult ) {
 			throw Common::Exceptions::Exception("no valid result handle: " + std::to_string(param_handle));
 		}

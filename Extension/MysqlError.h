@@ -11,7 +11,6 @@
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Tools.h>
 #include "Types.h"
 
 // Forward declarations
@@ -41,9 +40,9 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		int param_handle = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
 
-		MYSQL *myConn = mMysqlConnections[param_handle];
+		auto* myConn = mMysqlConnections[param_handle];
 		if ( !myConn ) {
 			throw Common::Exceptions::Exception("no valid mysql connection handle: " + std::to_string(param_handle));
 		}

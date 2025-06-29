@@ -12,8 +12,6 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/VoidType.h>
-#include <Core/Tools.h>
-#include <Core/VirtualMachine/Controller.h>
 #include "Types.h"
 
 // Forward declarations
@@ -44,10 +42,10 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		int param_handle = (*it++).value().toInt();
-		int param_rowIdx = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
+		auto param_rowIdx = (*it++).value().toInt();
 
-		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		auto* myResult = mMysqlResults[param_handle];
 		if ( !myResult ) {
 			throw Common::Exceptions::Exception("no valid mysql result!");
 		}
